@@ -1,7 +1,6 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 
 
 def func(x, y):
@@ -18,7 +17,7 @@ def initialize_population(n):
 
 
 def mutate(population):
-    mutation = 0.13 * np.random.normal(0, 1, (len(population), 2))
+    mutation = 0.23 * np.random.normal(0, 1, (len(population), 2))
     prob = np.tile(np.random.uniform(0, 1, (len(population), 1)), (1, 2))
     population = population + mutation * (prob > 0.9)
     return population
@@ -33,7 +32,7 @@ def value_list(population):
 def calc_weights_max(population):
     v_list = value_list(population)
     min_value = min(v_list)
-    v_list = v_list - min_value + 0.0001
+    v_list = v_list - min_value + 0.000001
     v_sum = sum(v_list)
     weights = v_list / v_sum
     return weights
@@ -42,7 +41,7 @@ def calc_weights_max(population):
 def calc_weights_min(population):
     v_list = value_list(population)
     max_value = max(v_list)
-    v_list = -(v_list - max_value + 0.0001)
+    v_list = -(v_list - max_value + 0.000001)
     v_sum = sum(v_list)
     weights = v_list / v_sum
     return weights
@@ -52,31 +51,26 @@ def crossover(parents):
     children = []
     for num in range(len(parents)):
         if num % 2 == 1:
-            np.random.seed(42)
             a = random.random()
             children.append(parents[num - 1] * a + parents[num] * (1 - a))
     return np.array(children)
 
 
-def main(mu, lamb, mode):
+def main(mu, lamb, mode, max_index):
+    population = initialize_population(mu)
+    # population = np.array([[10, 10]])
+
     x = np.arange(-5, 5, 0.01)
     y = np.arange(-5, 5, 0.01)
     X, Y = np.meshgrid(x, y)
     Z = func(X, Y)
     ax = plt.subplot(projection="3d", computed_zorder=False)
     ax.plot_surface(X, Y, Z, cmap="viridis", zorder=0)
-
-    population = initialize_population(mu)
     for obj in population:
         ax.scatter(obj[0], obj[1], func(obj[0], obj[1]), color="black", zorder=1)
 
-    average_old = math.inf
-    average_delta = 1
     i = 0
-    while average_delta > 0.00001 and i < 300:
-        average_new = np.mean(value_list(population))
-        average_delta = abs(average_new - average_old)
-        average_old = average_new
+    while i < max_index:
         i += 1
         if mode:
             weights = calc_weights_max(population)
@@ -97,9 +91,7 @@ def main(mu, lamb, mode):
         population = sorted_population[:mu]
 
     point = population[0]
-
     point = (round(point[0], 3), round(point[1], 3), round(func(point[0], point[1]), 5))
-    print(i)
 
     print(point)
 
@@ -111,4 +103,8 @@ def main(mu, lamb, mode):
 
 
 if __name__ == "__main__":
-    main(200, 400, 0)
+    # arg1 - parent population
+    # arg2 - children population
+    # arg3 - mode: 1=maximum, 0=minimum
+    # arg4 - number of iterations
+    main(128, 512, 1, 100)
