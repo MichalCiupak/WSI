@@ -8,18 +8,13 @@ def func(x, y):
 
 
 def initialize_population(n):
-    return np.array(
-        [
-            [random.randint(-400, 400) / 100, random.randint(-400, 400) / 100]
-            for i in range(n)
-        ]
-    )
+    return np.array([[0, 0] for i in range(n)])
 
 
 def mutate(population):
     mutation = 0.23 * np.random.normal(0, 1, (len(population), 2))
     prob = np.tile(np.random.uniform(0, 1, (len(population), 1)), (1, 2))
-    population = population + mutation * (prob > 0.9)
+    population = population + mutation * (prob > 0.8)
     return population
 
 
@@ -41,7 +36,7 @@ def calc_weights_max(population):
 def calc_weights_min(population):
     v_list = value_list(population)
     max_value = max(v_list)
-    v_list = -(v_list - max_value + 0.000001)
+    v_list = -(v_list - max_value - 0.000001)
     v_sum = sum(v_list)
     weights = v_list / v_sum
     return weights
@@ -58,7 +53,6 @@ def crossover(parents):
 
 def main(mu, lamb, mode, max_index):
     population = initialize_population(mu)
-    # population = np.array([[10, 10]])
 
     x = np.arange(-5, 5, 0.01)
     y = np.arange(-5, 5, 0.01)
@@ -107,4 +101,4 @@ if __name__ == "__main__":
     # arg2 - children population
     # arg3 - mode: 1=maximum, 0=minimum
     # arg4 - number of iterations
-    main(128, 512, 1, 100)
+    main(128, 512, 0, 100)
