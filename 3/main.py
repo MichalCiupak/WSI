@@ -78,7 +78,7 @@ class RandomAgent:
         return vector[:-1]
 
 
-class GreedyAgent:
+class NinjaAgent:
     def __init__(self):
         self.numbers = []
 
@@ -192,13 +192,13 @@ def run_game(vector, first_agent, second_agent):
 def main():
     win_m = 0
     win_n = 0
+    win_non = 0
     seed = 0
     job_seed = 0
-    for _ in range(1000):
-        random.seed(seed)
-        vector = [random.randint(-10, 10) for _ in range(4)]
+    for _ in range(30000):
+        vector = [random.randint(-10, 10) for _ in range(11)]
         # print(f"Vector: {vector}")
-        first_agent, second_agent = MinMaxAgent(), NinjaAgent()
+        first_agent, second_agent = MinMaxAgent(), MinMaxAgent()
         run_game(vector, first_agent, second_agent)
 
         # print(
@@ -211,13 +211,22 @@ def main():
         elif sum(first_agent.numbers) < sum(second_agent.numbers):
             win_n += 1
             job_seed = seed
+        else:
+            win_non += 1
         seed += 1
     print(vector)
     print(first_agent.numbers)
     print(second_agent.numbers)
     print(win_m)
     print(win_n)
+    print(win_non)
     print(job_seed)
+
+    # vector = [6, 4, 8, 3, 1, 9, 6]
+    # first_agent, second_agent = MinMaxAgent(), MinMaxAgent()
+    # run_game(vector, first_agent, second_agent)
+    # print(first_agent.numbers)
+    # print(second_agent.numbers)
 
 
 if __name__ == "__main__":
