@@ -1,71 +1,9 @@
 import random
+import time
+import numpy as np
+import matplotlib.pyplot as plt
 
 
-class NinjaKradzionyAgent:
-    """⠀⠀⠀⠀⠀⣀⣀⣠⣤⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⣀⠀⠀⠀⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠀⠀⠴⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠠⠶⠶⠶⠶⢶⣶⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀
-    ⠀⠀⠀⠀⢀⣴⣶⣶⣶⣶⣶⣶⣦⣬⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀
-    ⠀⠀⠀⠀⣸⣿⡿⠟⠛⠛⠋⠉⠉⠉⠁⠀⠀⠀⠈⠉⠉⠉⠙⠛⠛⠿⣿⣿⡄⠀
-    ⠀⠀⠀⠀⣿⠋⠀⠀⠀⠐⢶⣶⣶⠆⠀⠀⠀⠀⠀⢶⣶⣶⠖⠂⠀⠀⠈⢻⡇⠀
-    ⠀⠀⠀⠀⢹⣦⡀⠀⠀⠀⠀⠉⢁⣠⣤⣶⣶⣶⣤⣄⣀⠀⠀⠀⠀⠀⣀⣾⠃⠀
-    ⠀⠀⠀⠀⠘⣿⣿⣿⣶⣶⣶⣾⣿⣿⣿⡿⠿⠿⣿⣿⣿⣿⣷⣶⣾⣿⣿⡿⠀⠀
-    ⠀⠀⢀⣴⡀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀
-    ⠀⠀⣾⡿⢃⡀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀
-    ⠀⢸⠏⠀⣿⡇⠀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠁⠀⠀⠀⠀
-    ⠀⠀⠀⢰⣿⠃⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⠛⠛⣉⣁⣤⡶⠁⠀⠀⠀⠀⠀
-    ⠀⠀⣠⠟⠁⠀⠀⠀⠀⠀⠈⠛⠿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠁⠀⠀⠀⠀⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀
-                    かかって来い!"""
-
-    def __init__(OOOO000O000O00000):
-        OOOO000O000O00000.numbers = []
-
-    def act(O000000O000OO0O0O, vector: list):
-        if len(vector) % 2 == 0:
-            sum_even = sum(vector[::2])
-            sum_odd = sum(vector) - sum_even
-            if sum_even >= sum_odd:
-                O000000O000OO0O0O.numbers.append(vector[0])
-                return vector[1:]  # explained: https://r.mtdv.me/articles/k1evNIASMp
-            O000000O000OO0O0O.numbers.append(vector[-1])
-            return vector[:-1]
-        else:
-            sum_even = max(sum(vector[1::2]), sum(vector[2::2]))
-            sum_odd = max(sum(vector[:-1:2]), sum(vector[:-2:2]))
-            if sum_even >= sum_odd:
-                O000000O000OO0O0O.numbers.append(vector[-1])
-                return vector[:-1]
-            O000000O000OO0O0O.numbers.append(vector[0])
-            return vector[1:]
-
-
-# random.seed(8)  # TODO: For final results set seed as your student's id modulo 42
-
-# def choose(self, vector: list, isMine, depth):
-#         if len(vector) > 1:
-#             bilans_first = self.choose(vector[1:], not isMine, depth - 1)
-#             bilans_last = self.choose(vector[:-1], not isMine, depth - 1)
-#             if isMine:
-#                 bilans_first += vector[0]
-#                 bilans_last += vector[-1]
-#             else:
-#                 bilans_first -= vector[0]
-#                 bilans_last -= vector[-1]
-
-#             if isMine:
-#                 bilans = max(bilans_first, bilans_last)
-#             else:
-#                 bilans = min(bilans_first, bilans_last)
-
-
-#             return bilans
-#         else:
-#             if isMine:
-#                 return max(vector[0], vector[-1])
-#             else:
-#                 return -max(vector[0], vector[-1])
 class RandomAgent:
     def __init__(self):
         self.numbers = []
@@ -78,7 +16,7 @@ class RandomAgent:
         return vector[:-1]
 
 
-class NinjaAgent:
+class GreedyAgent:
     def __init__(self):
         self.numbers = []
 
@@ -96,18 +34,16 @@ class MinMaxAgent:
         self.depth = max_depth
 
     def choose(self, vector: list, isMine, depth):
-        if len(vector) > 1:
+        if len(vector) > 1 and depth > 0:
             bilans_first = self.choose(vector[1:], not isMine, depth - 1)
             bilans_last = self.choose(vector[:-1], not isMine, depth - 1)
             if isMine:
                 bilans_first += vector[0]
                 bilans_last += vector[-1]
+                bilans = max(bilans_first, bilans_last)
             else:
                 bilans_first -= vector[0]
                 bilans_last -= vector[-1]
-            if isMine:
-                bilans = max(bilans_first, bilans_last)
-            else:
                 bilans = min(bilans_first, bilans_last)
 
             return bilans
@@ -190,43 +126,48 @@ def run_game(vector, first_agent, second_agent):
 
 
 def main():
-    win_m = 0
-    win_n = 0
-    win_non = 0
-    seed = 0
-    job_seed = 0
-    for _ in range(30000):
-        vector = [random.randint(-10, 10) for _ in range(11)]
-        # print(f"Vector: {vector}")
-        first_agent, second_agent = MinMaxAgent(), MinMaxAgent()
+    win_p = 0
+    win_d = 0
+    time_list = []
+    first_points = []
+    second_points = []
+    count = 0
+    for _ in range(1000):
+        time_start = time.time()
+        random.seed(count)
+        count += 1
+        vector = [random.randint(-10, 10) for _ in range(15)]
+
+        first_agent, second_agent = MinMaxAgent(50), MinMaxAgent(50)
         run_game(vector, first_agent, second_agent)
+        time_end = time.time()
+        time_list.append(time_end - time_start)
+        first_points.append(sum(first_agent.numbers))
+        second_points.append(sum(second_agent.numbers))
 
-        # print(
-        #     f"First agent: {sum(first_agent.numbers)} Second agent: {sum(second_agent.numbers)}\n"
-        #     f"First agent: {first_agent.numbers}\n"
-        #     f"Second agent: {second_agent.numbers}"
-        # )
+        print(
+            f"{vector}\n"
+            f"First agent: {sum(first_agent.numbers)} Second agent: {sum(second_agent.numbers)}\n"
+            f"First agent: {first_agent.numbers}\n"
+            f"Second agent: {second_agent.numbers}"
+        )
+
         if sum(first_agent.numbers) > sum(second_agent.numbers):
-            win_m += 1
-        elif sum(first_agent.numbers) < sum(second_agent.numbers):
-            win_n += 1
-            job_seed = seed
-        else:
-            win_non += 1
-        seed += 1
-    print(vector)
-    print(first_agent.numbers)
-    print(second_agent.numbers)
-    print(win_m)
-    print(win_n)
-    print(win_non)
-    print(job_seed)
-
-    # vector = [6, 4, 8, 3, 1, 9, 6]
-    # first_agent, second_agent = MinMaxAgent(), MinMaxAgent()
-    # run_game(vector, first_agent, second_agent)
-    # print(first_agent.numbers)
-    # print(second_agent.numbers)
+            win_p += 1
+        if sum(first_agent.numbers) < sum(second_agent.numbers):
+            win_d += 1
+    print(win_p)
+    print(win_d)
+    print(np.mean(time_list))
+    print(np.mean(first_points))
+    print(np.mean(second_points))
+    print(np.std(first_points))
+    print(np.std(second_points))
+    plt.hist(second_points, bins=30, alpha=1)  # Adjust the number of bins as needed
+    plt.xlabel("Wartość")
+    plt.ylabel("Ilość wystąpień")
+    plt.title("Rozkład zdobytych punktów")
+    plt.show()
 
 
 if __name__ == "__main__":
