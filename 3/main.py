@@ -132,13 +132,13 @@ def main():
     first_points = []
     second_points = []
     count = 0
-    for _ in range(1000):
+    for _ in range(100):
         time_start = time.time()
         random.seed(count)
         count += 1
         vector = [random.randint(-10, 10) for _ in range(15)]
 
-        first_agent, second_agent = MinMaxAgent(50), MinMaxAgent(50)
+        first_agent, second_agent = RandomAgent(), MinMaxAgent(50)
         run_game(vector, first_agent, second_agent)
         time_end = time.time()
         time_list.append(time_end - time_start)
@@ -160,10 +160,11 @@ def main():
     print(win_d)
     print(np.mean(time_list))
     print(np.mean(first_points))
-    print(np.mean(second_points))
     print(np.std(first_points))
+    print(np.mean(second_points))
+
     print(np.std(second_points))
-    plt.hist(second_points, bins=30, alpha=1)  # Adjust the number of bins as needed
+    plt.hist(first_points, bins=30, alpha=1)  # Adjust the number of bins as needed
     plt.xlabel("Wartość")
     plt.ylabel("Ilość wystąpień")
     plt.title("Rozkład zdobytych punktów")
