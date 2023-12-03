@@ -3,9 +3,13 @@ import os
 import pickle
 import pygame
 import time
-
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
 from food import Food
-from model import game_state_to_data_sample
+from koltesty import game_state_to_data_sample
 from snake import Snake, Direction
 
 
@@ -19,7 +23,10 @@ def main():
     snake = Snake(block_size, bounds)
     food = Food(block_size, bounds, lifetime=100)
 
-    agent = HumanAgent(
+    # agent = HumanAgent(
+    #     block_size, bounds
+    # )  # Once your agent is good to go, change this line
+    agent = BehavioralCloningAgent(
         block_size, bounds
     )  # Once your agent is good to go, change this line
     scores = []
@@ -27,7 +34,7 @@ def main():
     pygame.time.delay(1000)
     while run:
         pygame.time.delay(
-            80
+            100
         )  # Adjust game speed, decrease to test your agent and model quickly
 
         for event in pygame.event.get():
@@ -39,6 +46,10 @@ def main():
             "snake_body": snake.body,  # The last element is snake's head
             "snake_direction": snake.direction,
         }
+
+        print(game_state)
+        data_sample = game_state_to_data_sample(game_state)
+        print(data_sample)
 
         direction = agent.act(game_state)
         snake.turn(direction)
@@ -103,13 +114,22 @@ class HumanAgent:
 
 
 class BehavioralCloningAgent:
-    def __init__(self):
-        raise NotImplementedError()
+    def __init__(self, block_size, bounds):
+        self.model = self.load_model()
+
+    def load_model(self):
+        with open("snake_model.pickle", "rb") as f:
+            loaded_model = pickle.load(f)
+        return loaded_model
 
     def act(self, game_state) -> Direction:
         """Calculate data sample attributes from game_state and run the trained model to predict snake's action/direction"""
         data_sample = game_state_to_data_sample(game_state)
-        raise NotImplementedError()
+        print(data_sample)
+        predicted_direction_probabilities = self.model.predict_proba([data_sample])[0]
+        predicted_direction_index = np.argmax(predicted_direction_probabilities)
+        predicted_direction = Direction(predicted_direction_index)
+        return predicted_direction
 
     def dump_data(self):
         pass
