@@ -4,12 +4,8 @@ import pickle
 import pygame
 import time
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score
 from food import Food
-from koltesty import game_state_to_data_sample
+from model import game_state_to_data_sample
 from snake import Snake, Direction
 
 
@@ -34,7 +30,7 @@ def main():
     pygame.time.delay(1000)
     while run:
         pygame.time.delay(
-            100
+            10
         )  # Adjust game speed, decrease to test your agent and model quickly
 
         for event in pygame.event.get():
@@ -46,10 +42,6 @@ def main():
             "snake_body": snake.body,  # The last element is snake's head
             "snake_direction": snake.direction,
         }
-
-        print(game_state)
-        data_sample = game_state_to_data_sample(game_state)
-        print(data_sample)
 
         direction = agent.act(game_state)
         snake.turn(direction)
@@ -116,6 +108,8 @@ class HumanAgent:
 class BehavioralCloningAgent:
     def __init__(self, block_size, bounds):
         self.model = self.load_model()
+        self.block_size = block_size
+        self.bounds = bounds
 
     def load_model(self):
         with open("snake_model.pickle", "rb") as f:
@@ -124,10 +118,11 @@ class BehavioralCloningAgent:
 
     def act(self, game_state) -> Direction:
         """Calculate data sample attributes from game_state and run the trained model to predict snake's action/direction"""
-        data_sample = game_state_to_data_sample(game_state)
-        print(data_sample)
-        predicted_direction_probabilities = self.model.predict_proba([data_sample])[0]
-        predicted_direction_index = np.argmax(predicted_direction_probabilities)
+        data_sample = game_state_to_data_sample(
+            game_state, self.bounds, self.block_size
+        )
+        predicted_direction = self.model.predict_proba([data_sample])[0]
+        predicted_direction_index = np.argmax(predicted_direction)
         predicted_direction = Direction(predicted_direction_index)
         return predicted_direction
 

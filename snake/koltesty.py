@@ -54,7 +54,7 @@ def is_obstacle_this_direction(body, b_s, bounds):
             obstacles[2] = 1
         if head[0] - b_s == segment[0] and head[1] == segment[1] or head[0] == 0:
             obstacles[3] = 1
-    return obstacles
+    return np.array(obstacles)
 
 
 def data_converter():
@@ -90,9 +90,7 @@ def data_converter():
     return X_train, Y_train
 
 
-def game_state_to_data_sample(game_state):
-    bounds = (300, 300)
-    block_size = 30
+def game_state_to_data_sample(game_state, bounds, block_size):
 
     input_features = np.array([])
     food = game_state["food"]
@@ -105,8 +103,6 @@ def game_state_to_data_sample(game_state):
     input_features = np.concatenate(
         (input_features, is_obstacle_this_direction(body, block_size, bounds))
     )
-    # print(input_features)
-    # print(Y_train)
     return input_features
 
 
