@@ -7,6 +7,7 @@ import numpy as np
 from food import Food
 from model import game_state_to_data_sample
 from snake import Snake, Direction
+from model import LogisticRegressionMulticlass
 
 
 def main():
@@ -27,10 +28,11 @@ def main():
     )  # Once your agent is good to go, change this line
     scores = []
     run = True
-    pygame.time.delay(1000)
-    while run:
+    pygame.time.delay(100)
+    game_count = 0
+    while run and game_count < 100:
         pygame.time.delay(
-            10
+            50
         )  # Adjust game speed, decrease to test your agent and model quickly
 
         for event in pygame.event.get():
@@ -51,6 +53,7 @@ def main():
         food.update()
 
         if snake.is_wall_collision() or snake.is_tail_collision():
+            game_count += 1
             pygame.display.update()
             pygame.time.delay(300)
             scores.append(snake.length - 3)
@@ -63,6 +66,7 @@ def main():
         pygame.display.update()
 
     print(f"Scores: {scores}")
+    print(f"Mean: {np.mean(scores)}")
     # agent.dump_data()
     pygame.quit()
 
@@ -117,14 +121,20 @@ class BehavioralCloningAgent:
         return loaded_model
 
     def act(self, game_state) -> Direction:
-        """Calculate data sample attributes from game_state and run the trained model to predict snake's action/direction"""
         data_sample = game_state_to_data_sample(
             game_state, self.bounds, self.block_size
         )
-        predicted_direction = self.model.predict_proba([data_sample])[0]
-        predicted_direction_index = np.argmax(predicted_direction)
-        predicted_direction = Direction(predicted_direction_index)
-        return predicted_direction
+        predicted_classes = self.model.predict_classes(np.array([data_sample]))
+        action = game_state["snake_direction"]
+        if predicted_classes == 0:
+            action = Direction.UP
+        elif predicted_classes == 1:
+            action = Direction.RIGHT
+        elif predicted_classes == 2:
+            action = Direction.DOWN
+        elif predicted_classes == 3:
+            action = Direction.LEFT
+        return action
 
     def dump_data(self):
         pass

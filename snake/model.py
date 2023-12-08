@@ -1,9 +1,6 @@
 import pickle
 import numpy as np
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score
 from snake import Direction
 
 """Implement your model, training code and other utilities here. Please note, you can generate multiple 
@@ -71,10 +68,13 @@ def game_state_to_data_sample(game_state, bounds, block_size):
 
 
 def data_converter():
-    loaded_data = load_data("snakerun4.pickle")
-    bounds = loaded_data["bounds"]
-    block_size = loaded_data["block_size"]
-    data = loaded_data["data"]
+    loaded_data1 = load_data("snakerun5.pickle")
+    bounds = loaded_data1["bounds"]
+    block_size = loaded_data1["block_size"]
+    loaded_data2 = load_data("snakerun4.pickle")
+    data = loaded_data1["data"]
+    data2 = loaded_data2["data"]
+    data = data + data2
     X_train = []
     Y_train = []
     for data_set in data:
@@ -82,34 +82,71 @@ def data_converter():
         output = data_set[1]
         X_train.append(input_features)
         Y_train.append(direction_to_label[output])
-    return X_train, Y_train
+    return np.array(X_train), np.array(Y_train)
+
+
+def compare_vectors(a, b):
+    cons = 0
+    not_cons = 0
+    for a_elem, b_elem in zip(a, b):
+        if a_elem == b_elem:
+            cons += 1
+        else:
+            not_cons += 1
+    return cons / (cons + not_cons)
+
+
+class LogisticRegressionMulticlass:
+    def __init__(self, learning_rate=0.01, num_iterations=10000):
+        self.learning_rate = learning_rate
+        self.num_iterations = num_iterations
+
+    def softmax(self, z):
+        exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+        return exp_z / np.sum(exp_z, axis=1, keepdims=True)
+
+    def fit(self, X, Y, num_classes):
+        num_samples, num_features = X.shape
+        # self.num_classes = num_classes
+
+        self.weights = np.ones((num_features, num_classes))
+        self.bias = np.ones((1, num_classes))
+
+        Y_encoded = np.eye(num_classes)[Y]
+
+        for _ in range(self.num_iterations):
+            linear_model = np.dot(X, self.weights) + self.bias
+
+            probabilities = self.softmax(linear_model)
+            dw = (1 / num_samples) * np.dot(X.T, (probabilities - Y_encoded))
+            db = (1 / num_samples) * np.sum(
+                probabilities - Y_encoded, axis=0, keepdims=True
+            )
+            self.weights -= self.learning_rate * dw
+            self.bias -= self.learning_rate * db
+
+    def predict_classes(self, X):
+        linear_model = np.dot(X, self.weights) + self.bias
+        probabilities = self.softmax(linear_model)
+        predicted_classes = np.argmax(probabilities, axis=1)
+        # print(probabilities)
+        return predicted_classes
 
 
 if __name__ == "__main__":
     X_train, Y_train = data_converter()
-    Y_train_one_hot = np.array(Y_train)
 
-    # Podział danych na zbiór treningowy i testowy
     X_train, X_test, Y_train, Y_test = train_test_split(
-        X_train, Y_train_one_hot, test_size=0.2, random_state=42
+        X_train, Y_train, test_size=0.2, random_state=42
     )
 
-    # Standaryzacja danych (opcjonalne, ale może poprawić wyniki)
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+    num_classes = 4
+    model = LogisticRegressionMulticlass()
+    model.fit(X_train, Y_train, num_classes)
 
-    # Tworzymy model regresji logistycznej
-    model = LogisticRegression(max_iter=1000, random_state=42)
-
-    # Trenujemy model
-    model.fit(X_train, Y_train)
-
-    # Testujemy model na zbiorze testowym
-    Y_pred = model.predict(X_test)
-
-    # Oceniamy dokładność modelu
-    accuracy = accuracy_score(Y_test, Y_pred)
+    predicted_classes1 = model.predict_classes(X_train)
+    predicted_classes2 = model.predict_classes(X_test)
+    print(compare_vectors(predicted_classes1, Y_train))
+    print(compare_vectors(predicted_classes2, Y_test))
     with open("snake_model.pickle", "wb") as f:
         pickle.dump(model, f)
-    print(f"Accuracy: {accuracy}")
