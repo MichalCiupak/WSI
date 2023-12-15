@@ -29,11 +29,11 @@ def main():
     )  # Once your agent is good to go, change this line
     scores = []
     run = True
-    pygame.time.delay(100)
+    pygame.time.delay(1)
     game_count = 0
     while run and game_count < 100:
         pygame.time.delay(
-            80
+            1
         )  # Adjust game speed, decrease to test your agent and model quickly
 
         for event in pygame.event.get():

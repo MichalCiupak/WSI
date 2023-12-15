@@ -158,8 +158,11 @@ if __name__ == "__main__":
     X_train, Y_train = data_converter()
     print(len(X_train[0]))
 
-    X_train, X_test, Y_train, Y_test = train_test_split(
+    X_train, X_temp, Y_train, Y_temp = train_test_split(
         X_train, Y_train, test_size=0.2, random_state=42
+    )
+    X_test, X_val, Y_test, Y_val = train_test_split(
+        X_temp, Y_temp, test_size=0.5, random_state=42
     )
 
     num_classes = 4
