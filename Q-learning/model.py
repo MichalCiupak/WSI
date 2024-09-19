@@ -86,16 +86,10 @@ def clear_data(data):
 
 
 def data_converter():
-    loaded_data1 = load_data("snakerun5.pickle")
-    bounds = loaded_data1["bounds"]
-    block_size = loaded_data1["block_size"]
-    loaded_data2 = load_data("snakerun4.pickle")
-    data = loaded_data1["data"]
-    data2 = loaded_data2["data"]
-    data = data + data2
-    print(len(data))
-    data = clear_data(data)
-    print(len(data))
+    loaded_data = load_data("snakerun5.pickle")
+    bounds = loaded_data["bounds"]
+    block_size = loaded_data["block_size"]
+    data = loaded_data["data"]
     X_train = []
     Y_train = []
     for data_set in data:
@@ -128,8 +122,6 @@ class LogisticRegressionMulticlass:
 
     def fit(self, X, Y, num_classes):
         num_samples, num_features = X.shape
-        # self.num_classes = num_classes
-
         self.weights = np.ones((num_features, num_classes))
         self.bias = np.ones((1, num_classes))
 
@@ -149,14 +141,11 @@ class LogisticRegressionMulticlass:
     def predict_classes(self, X):
         linear_model = np.dot(X, self.weights) + self.bias
         probabilities = self.softmax(linear_model)
-
-        # print(probabilities)
         return probabilities
 
 
 if __name__ == "__main__":
     X_train, Y_train = data_converter()
-    print(len(X_train[0]))
 
     X_train, X_test, Y_train, Y_test = train_test_split(
         X_train, Y_train, test_size=0.2, random_state=42
@@ -168,7 +157,5 @@ if __name__ == "__main__":
 
     predicted_classes1 = model.predict_classes(X_train)
     predicted_classes2 = model.predict_classes(X_test)
-    # print(compare_vectors(predicted_classes1, Y_train))
-    # print(compare_vectors(predicted_classes2, Y_test))
     with open("snake_model.pickle", "wb") as f:
         pickle.dump(model, f)
